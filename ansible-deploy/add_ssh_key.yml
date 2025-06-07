@@ -1,0 +1,20 @@
+- name: Configure SSH access
+  hosts: remote
+  #become: true
+
+  tasks:
+    - name: Ensure .ssh directory exists
+      file:
+        path: /home/vboxuser/.ssh
+        state: directory
+        owner: vboxuser
+        group: vboxuser
+        mode: 0700
+
+    - name: Add SSH public key to authorized_keys
+      copy:
+        src: ~/.ssh/id_rsa_vm.pub
+        dest: /home/vboxuser/.ssh/authorized_keys
+        owner: vboxuser
+        group: vboxuser
+        mode: 0600

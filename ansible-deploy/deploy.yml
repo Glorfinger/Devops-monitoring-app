@@ -1,0 +1,36 @@
+---
+- name: Déploiement de l'application Node.js via Docker
+  hosts: devops
+  become: true
+
+  tasks:
+    - name: Mettre à jour les paquets
+      apt:
+        update_cache: yes
+
+    - name: Installer Docker
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Installer Docker Compose
+      apt:
+        name: docker-compose
+        state: present
+
+    - name: Copier les fichiers du projet
+      become: yes
+      copy:
+        src: files/Devops-monitoring-app/
+        dest: /home/{{ ansible_user }}/devops-monitoring-app/
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: '0755'  
+
+    - name: Lancer la stack Docker Compose
+      become: true
+      command: docker-compose up -d
+      args:
+        chdir: /home/{{ ansible_user }}/devops-monitoring-app/
+
+
