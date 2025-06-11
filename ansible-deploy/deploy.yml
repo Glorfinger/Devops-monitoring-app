@@ -33,4 +33,9 @@
       args:
         chdir: /home/{{ ansible_user }}/devops-monitoring-app/
 
+    - name: Vérifier que node-api est lancé
+      shell: docker ps | grep node-api
+      register: result
 
+    - debug:
+      var: result.stdout_lines

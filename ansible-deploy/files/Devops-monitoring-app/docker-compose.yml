@@ -1,6 +1,8 @@
 services:
   node-api:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: node-api
     ports:
       - "3000:3000"
@@ -10,8 +12,6 @@ services:
       - MONGO_URL=mongodb://mongo:27017/myapp
     networks:
       - devops-net
-    volumes:
-      - .:/app
 
   mongo:
     image: mongo:6
@@ -49,13 +49,13 @@ services:
     container_name: k6
     volumes:
       - ./k6:/scripts
-    entrypoint: ["k6", "run", "/scripts/test.js"]
+    entrypoint: ["k6", "run", "/scripts/test-load.js"]
     depends_on:
       - node-api
     networks:
       - devops-net
-    # À ne pas lancer au démarrage automatiquement :
-    #   on peut commenter ou utiliser `profiles:` si version 3.9+
+    # facultatif : ajoute profiles: ["test"] pour éviter le lancement par défaut
+
   node-exporter:
     image: prom/node-exporter
     container_name: node-exporter
